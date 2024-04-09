@@ -21,7 +21,7 @@ from tkcalendar import Calendar, DateEntry
 from datetime import date
 
 #importando funções view
-from view import valoresBarra, inserirCategoria, verCategorias, inserirGastos, inserirReceita
+from view import valoresBarra, tabela, deletarReceitas, deletarGastos, inserirCategoria, verCategorias, inserirGastos, inserirReceita
 
 
 # cores 
@@ -126,6 +126,65 @@ def inserirReceitaB():
     graficoBarras()
     resumo()
     graficoPizza()
+
+# Função inserir despesas
+def inserirDespesasB():
+    nome = comboCategoriaDespesa.get()
+    data = eCalendarioDespesa.get()
+    quantia = eValorDespesas.get()
+    listaInserir = [nome, data, quantia]
+
+    for i in listaInserir:
+        if i=='':
+            messagebox.showerror('Erro', 'Preencha todos os campos!')
+            return
+# Chama funcao inserir despesas da view
+    inserirGastos(listaInserir)
+    messagebox.showinfo('Sucesso!', 'Os dados foram inseridos com sucesso.')
+
+    comboCategoriaDespesa.delete(0, 'end')
+    eCalendarioDespesa.delete(0, 'end')
+    eValorDespesas.delete(0, 'end')
+
+# Atualizando dados
+    mostrarTabela()
+    porcentagem()
+    graficoBarras()
+    resumo()
+    graficoPizza()
+
+
+# Função deletar
+def deletarDados():
+    try:
+        treev_dados = tree.focus()
+        treev_dicionario = tree.item(treev_dados)
+        treev_lista = treev_dicionario['values']
+        valor = treev_lista[0]
+        nome = treev_lista[1]
+        
+        if nome=='Receitas':
+            deletarReceitas([valor])
+            messagebox.showinfo('Sucesso!', 'Os dados foram deletados com sucesso.')
+# Atualizando dados
+            mostrarTabela()
+            porcentagem()
+            graficoBarras()
+            resumo()
+            graficoPizza()
+
+        else:
+            deletarGastos([valor])
+            messagebox.showinfo('Sucesso!', 'Os dados foram deletados com sucesso.')
+# Atualizando dados
+            mostrarTabela()
+            porcentagem()
+            graficoBarras()
+            resumo()
+            graficoPizza()
+    
+    except IndexError:
+        messagebox.showerror('Erro!', 'Selecione um dos dados na tabela.')
 
 
 # Percentual
@@ -270,7 +329,7 @@ def mostrarTabela():
     # criando uma tabela com duas barras de rolar
     tabela_head = ['#Id','Categoria','Data','Quantia']
 
-    listaItens = [[0,2,3,4],[0,2,3,4],[0,2,3,4],[0,2,3,4]]
+    listaItens = tabela()
     
     global tree
 
@@ -313,7 +372,7 @@ l_categoria = Label(frameOperacoes, text='Categoria', height=1, anchor=NW, font=
 l_categoria.place(x=10,y=40)
 
 # Pegando categorias
-categoria_funcao = ['Agua', 'Luz']
+categoria_funcao = verCategorias()
 categoria = []
 
 for i in categoria_funcao:
@@ -336,11 +395,11 @@ l_valorDespesas.place(x=10,y=100)
 eValorDespesas = Entry(frameOperacoes, width=14, justify='left', relief='solid')
 eValorDespesas.place(x=110, y=101)
 
-#Botao Adicionar
+#Botao Adicionar Despesa
 ImgAddDespesas = Image.open('add.png')
 ImgAddDespesas = ImgAddDespesas.resize((17,17))
 ImgAddDespesas = ImageTk.PhotoImage(ImgAddDespesas)
-botaoAddDespesas = Button(frameOperacoes, image=ImgAddDespesas, text=" Adicionar".upper(), width=80, compound=LEFT, anchor=NW, font=('Ivy 7 bold'), bg=co1, fg=co0, overrelief=RIDGE)
+botaoAddDespesas = Button(frameOperacoes, command = inserirDespesasB, image=ImgAddDespesas, text=" Adicionar".upper(), width=80, compound=LEFT, anchor=NW, font=('Ivy 7 bold'), bg=co1, fg=co0, overrelief=RIDGE)
 botaoAddDespesas.place(x=110, y=131)
 
 #Botao Excluir
@@ -350,7 +409,7 @@ l_Deletar.place(x=10,y=181)
 ImgDeletar = Image.open('delete.png')
 ImgDeletar = ImgDeletar.resize((17,17))
 ImgDeletar = ImageTk.PhotoImage(ImgDeletar)
-botaoDelDespesas = Button(frameOperacoes, image=ImgDeletar, text=" Deletar".upper(), width=80, compound=LEFT, anchor=NW, font=('Ivy 7 bold'), bg=co1, fg=co0, overrelief=RIDGE)
+botaoDelDespesas = Button(frameOperacoes, command=deletarDados, image=ImgDeletar, text=" Deletar".upper(), width=80, compound=LEFT, anchor=NW, font=('Ivy 7 bold'), bg=co1, fg=co0, overrelief=RIDGE)
 botaoDelDespesas.place(x=110, y=181)
 
 

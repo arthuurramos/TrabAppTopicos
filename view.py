@@ -30,7 +30,7 @@ def inserirGastos(i):
 def deletarReceitas(i):
     with con:
         cur = con.cursor()
-        query = "DELETE FROM Receitas WHERE id=?"
+        query = "DELETE FROM Receita WHERE id=?"
         cur.execute(query, i)
 
 def deletarGastos(i):
@@ -62,7 +62,7 @@ def verReceitas():
 
     with con:
         cur = con.cursor()
-        cur.execute("SELECT * FROM Receitas")
+        cur.execute("SELECT * FROM Receita")
         linha = cur.fetchall()
         for l in linha:
             lista_itens.append(l)
@@ -95,7 +95,7 @@ def tabela():
         tabelaLista.append(i)
     
     for i in receitas:
-        tabelaLista(i)
+        tabelaLista.append(i)
     
     return tabelaLista
 
