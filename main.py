@@ -1,6 +1,11 @@
+import sqlite3 as lite
+
+# conexão com bd
+con = lite.connect('dados.db')
+
 from tkinter import *
 from tkinter import Tk, ttk
-
+from tkinter import messagebox
 #importando pillow
 from PIL import Image, ImageTk
 
@@ -14,6 +19,10 @@ from matplotlib.figure import Figure
 #importando calendário
 from tkcalendar import Calendar, DateEntry
 from datetime import date
+
+#importando funções view
+from view import valoresBarra, inserirCategoria, verCategorias, inserirGastos, inserirReceita
+
 
 # cores 
 co0 = "#2e2d2b" 
@@ -60,6 +69,63 @@ appImg = ImageTk.PhotoImage(appImg)
 
 appLogo = Label(frameCima, image=appImg, text="                        Controle de Finanças", width=900, compound=LEFT, padx=5, relief=RAISED, anchor=NW, font=('Verdana 20 bold'), bg=co1, fg=co4)
 appLogo.place(x=0, y=0)
+
+# definindo tree = global
+global tree
+
+# Função inserir categoria
+def inserirCategoriaB():
+    nome = eNovaCategoria.get()
+
+    listaInserir = [nome]    
+    
+    for i in listaInserir:
+        if i=='':
+            messagebox.showerror('Erro', 'Preencha todos os campos!')
+            return
+        
+    # Passando lista para a funç inserir gastos na view
+    inserirCategoria(listaInserir)
+            
+    messagebox.showinfo('Sucesso!', 'Os dados foram inseridos com sucesso.')
+
+    eNovaCategoria.delete(0, 'end')
+
+    # Pegando valores da categoria
+    categoriasFuncao = verCategorias()
+    categoria = []
+
+    for i in categoriasFuncao:
+        categoria.append(i[1])
+
+    # Atualizando lista de categorias
+    comboCategoriaDespesa['values'] = (categoria)
+
+
+# Função inserir receitas
+def inserirReceitaB():
+    nome = 'Receitas'
+    data = eCalendarioReceita.get()
+    quantia = eValorReceitas.get()
+    listaInserir = [nome, data, quantia]
+
+    for i in listaInserir:
+        if i=='':
+            messagebox.showerror('Erro', 'Preencha todos os campos!')
+            return
+# Chama funcao inserir receitas da view
+    inserirReceita(listaInserir)
+    messagebox.showinfo('Sucesso!', 'Os dados foram inseridos com sucesso.')
+
+    eCalendarioReceita.delete(0, 'end')
+    eValorReceitas.delete(0, 'end')
+
+# Atualizando dados
+    mostrarTabela()
+    porcentagem()
+    graficoBarras()
+    resumo()
+    graficoPizza()
 
 
 # Percentual
@@ -247,10 +313,10 @@ l_categoria = Label(frameOperacoes, text='Categoria', height=1, anchor=NW, font=
 l_categoria.place(x=10,y=40)
 
 # Pegando categorias
-categoriaFuncao = ['Agua', 'Luz']
+categoria_funcao = ['Agua', 'Luz']
 categoria = []
 
-for i in categoriaFuncao:
+for i in categoria_funcao:
     categoria.append(i[1])
 
 comboCategoriaDespesa = ttk.Combobox(frameOperacoes, width=10, font=('Ivy 10'))
@@ -308,7 +374,7 @@ eValorReceitas.place(x=110, y=71)
 ImgAddReceitas = Image.open('add.png')
 ImgAddReceitas = ImgAddReceitas.resize((17,17))
 ImgAddReceitas = ImageTk.PhotoImage(ImgAddReceitas)
-botaoAddReceitas = Button(frameConfiguracao, image=ImgAddReceitas, text=" Adicionar".upper(), width=80, compound=LEFT, anchor=NW, font=('Ivy 7 bold'), bg=co1, fg=co0, overrelief=RIDGE)
+botaoAddReceitas = Button(frameConfiguracao,command = inserirReceitaB, image=ImgAddReceitas, text=" Adicionar".upper(), width=80, compound=LEFT, anchor=NW, font=('Ivy 7 bold'), bg=co1, fg=co0, overrelief=RIDGE)
 botaoAddReceitas.place(x=110, y=100)
 
 # Nova Categoria 
@@ -321,9 +387,8 @@ eNovaCategoria.place(x=110, y=145)
 ImgAddCategoria = Image.open('add.png')
 ImgAddCategoria = ImgAddCategoria.resize((17,17))
 ImgAddCategoria = ImageTk.PhotoImage(ImgAddCategoria)
-botaoAddCategoria = Button(frameConfiguracao, image=ImgAddCategoria, text=" Adicionar".upper(), width=80, compound=LEFT, anchor=NW, font=('Ivy 7 bold'), bg=co1, fg=co0, overrelief=RIDGE)
+botaoAddCategoria = Button(frameConfiguracao,command = inserirCategoriaB, image=ImgAddCategoria, text=" Adicionar".upper(), width=80, compound=LEFT, anchor=NW, font=('Ivy 7 bold'), bg=co1, fg=co0, overrelief=RIDGE)
 botaoAddCategoria.place(x=110, y=181)
-
 
 
 

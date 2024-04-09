@@ -14,7 +14,7 @@ def inserirCategoria(i):
 def inserirReceita(i):
     with con:
         cur  = con.cursor()
-        query = "INSERT INTO Receitas(categoria, adicionado_em, valor) VALUES (?, ?, ?)"
+        query = "INSERT INTO Receita(categoria, adicionado_em, valor) VALUES (?, ?, ?)"
         cur.execute(query, i)
 
 # inserir GASTOS
@@ -83,3 +83,26 @@ def verGastos():
             lista_itens.append(l)
 
     return lista_itens
+
+# função dados da tabela
+def tabela():
+    gastos = verGastos()
+    receitas = verReceitas()
+
+    tabelaLista = []
+
+    for i in gastos:
+        tabelaLista.append(i)
+    
+    for i in receitas:
+        tabelaLista(i)
+    
+    return tabelaLista
+
+# função dados do grafico barras
+def valoresBarra():
+    receitas = verReceitas()
+    receitasLista =[]
+
+    for i in receitas:
+        receitasLista.append(i[3])
