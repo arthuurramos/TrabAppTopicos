@@ -11,6 +11,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 
+#importando calendário
+from tkcalendar import Calendar, DateEntry
+from datetime import date
+
 # cores 
 co0 = "#2e2d2b" 
 co1 = "#feffff"  
@@ -180,5 +184,147 @@ graficoBarras()
 porcentagem()
 resumo()
 graficoPizza()
+
+# Criando frames dentro do frameBaixo
+frameRenda = Frame(frameBaixo, width=300, height=250, background=co1)
+frameRenda.grid(row=0, column=0)
+
+frameOperacoes = Frame(frameBaixo, width=220, height=250, background=co1)
+frameOperacoes.grid(row=0, column=1, padx=5)
+
+frameConfiguracao = Frame(frameBaixo, width=220, height=250, background=co1)
+frameConfiguracao.grid(row=0, column=2, padx=5)
+
+# Tabela despesas e receita
+appTabela = Label(frameMeio, text="Tabela de Receitas e Despesas", anchor=NW, font=('Verdana 12'), bg=co1, fg=co4)
+appTabela.place(x=5, y=309)
+
+### Mostrar Tabela
+def mostrarTabela():
+    # criando uma tabela com duas barras de rolar
+    tabela_head = ['#Id','Categoria','Data','Quantia']
+
+    listaItens = [[0,2,3,4],[0,2,3,4],[0,2,3,4],[0,2,3,4]]
+    
+    global tree
+
+    tree = ttk.Treeview(frameRenda, selectmode="extended",columns=tabela_head, show="headings")
+    # barra de rolar vertical
+    vsb = ttk.Scrollbar(frameRenda, orient="vertical", command=tree.yview)
+    # barra de rolar horizontal
+    hsb = ttk.Scrollbar(frameRenda, orient="horizontal", command=tree.xview)
+
+    tree.configure(yscrollcommand=vsb.set, xscrollcommand=hsb.set)
+
+    tree.grid(column=0, row=0, sticky='nsew')
+    vsb.grid(column=1, row=0, sticky='ns')
+    hsb.grid(column=0, row=1, sticky='ew')
+
+    hd=["center","center","center", "center"]
+    h=[30,100,100,100]
+    n=0
+
+    for col in tabela_head:
+        tree.heading(col, text=col.title(), anchor=CENTER)
+    # adjust the column's width to the header string
+        tree.column(col, width=h[n],anchor=hd[n])
+        
+        n+=1
+
+    for item in listaItens:
+        tree.insert('', 'end', values=item)
+
+
+mostrarTabela()
+
+
+# Configurações despesas
+l_info = Label(frameOperacoes, text='Insira novas despesas', height=1, anchor=NW, font=('Verdana 10 bold'), bg=co1, fg=co4)
+l_info.place(x=10,y=10)
+
+# Categoria
+l_categoria = Label(frameOperacoes, text='Categoria', height=1, anchor=NW, font=('Ivy 10'), bg=co1, fg=co4)
+l_categoria.place(x=10,y=40)
+
+# Pegando categorias
+categoriaFuncao = ['Agua', 'Luz']
+categoria = []
+
+for i in categoriaFuncao:
+    categoria.append(i[1])
+
+comboCategoriaDespesa = ttk.Combobox(frameOperacoes, width=10, font=('Ivy 10'))
+comboCategoriaDespesa['values'] = (categoria)
+comboCategoriaDespesa.place(x=110, y=41)
+
+
+#Data
+l_dataDespesas = Label(frameOperacoes, text='Data', height=1, anchor=NW, font=('Ivy 10'), bg=co1, fg=co4)
+l_dataDespesas.place(x=10,y=70)
+eCalendarioDespesa = DateEntry(frameOperacoes, widht=12, background='darkblue', foreground='white', borderwidht=2, year=2022)
+eCalendarioDespesa.place(x=110, y=71)
+
+# VALOR
+l_valorDespesas = Label(frameOperacoes, text='Quantia total', height=1, anchor=NW, font=('Ivy 10'), bg=co1, fg=co4)
+l_valorDespesas.place(x=10,y=100)
+eValorDespesas = Entry(frameOperacoes, width=14, justify='left', relief='solid')
+eValorDespesas.place(x=110, y=101)
+
+#Botao Adicionar
+ImgAddDespesas = Image.open('add.png')
+ImgAddDespesas = ImgAddDespesas.resize((17,17))
+ImgAddDespesas = ImageTk.PhotoImage(ImgAddDespesas)
+botaoAddDespesas = Button(frameOperacoes, image=ImgAddDespesas, text=" Adicionar".upper(), width=80, compound=LEFT, anchor=NW, font=('Ivy 7 bold'), bg=co1, fg=co0, overrelief=RIDGE)
+botaoAddDespesas.place(x=110, y=131)
+
+#Botao Excluir
+l_Deletar = Label(frameOperacoes, text='Excluir ação', height=1, anchor=NW, font=('Ivy 10 bold'), bg=co1, fg=co4)
+l_Deletar.place(x=10,y=181)
+
+ImgDeletar = Image.open('delete.png')
+ImgDeletar = ImgDeletar.resize((17,17))
+ImgDeletar = ImageTk.PhotoImage(ImgDeletar)
+botaoDelDespesas = Button(frameOperacoes, image=ImgDeletar, text=" Deletar".upper(), width=80, compound=LEFT, anchor=NW, font=('Ivy 7 bold'), bg=co1, fg=co0, overrelief=RIDGE)
+botaoDelDespesas.place(x=110, y=181)
+
+
+########### Configurações RECEITAS ##########
+l_info = Label(frameConfiguracao, text='Insira novas receitas', height=1, anchor=NW, font=('Verdana 10 bold'), bg=co1, fg=co4)
+l_info.place(x=10,y=10)
+
+#Data RECEITAS
+l_dataReceitas = Label(frameConfiguracao, text='Data', height=1, anchor=NW, font=('Ivy 10'), bg=co1, fg=co4)
+l_dataReceitas.place(x=10,y=40)
+eCalendarioReceita = DateEntry(frameConfiguracao, widht=12, background='darkblue', foreground='white', borderwidht=2, year=2022)
+eCalendarioReceita.place(x=110, y=41)
+
+# VALOR RECEITAS
+l_valorReceitas = Label(frameConfiguracao, text='Quantia total', height=1, anchor=NW, font=('Ivy 10'), bg=co1, fg=co4)
+l_valorReceitas.place(x=10,y=70)
+eValorReceitas = Entry(frameConfiguracao, width=14, justify='left', relief='solid')
+eValorReceitas.place(x=110, y=71)
+
+#Botao Adicionar RECEITAS
+ImgAddReceitas = Image.open('add.png')
+ImgAddReceitas = ImgAddReceitas.resize((17,17))
+ImgAddReceitas = ImageTk.PhotoImage(ImgAddReceitas)
+botaoAddReceitas = Button(frameConfiguracao, image=ImgAddReceitas, text=" Adicionar".upper(), width=80, compound=LEFT, anchor=NW, font=('Ivy 7 bold'), bg=co1, fg=co0, overrelief=RIDGE)
+botaoAddReceitas.place(x=110, y=100)
+
+# Nova Categoria 
+l_info = Label(frameConfiguracao, text='Categoria', height=1, anchor=NW, font=('Ivy 10 bold'), bg=co1, fg=co4)
+l_info.place(x=10,y=145)
+eNovaCategoria = Entry(frameConfiguracao, width=14, justify='left', relief='solid')
+eNovaCategoria.place(x=110, y=145)
+
+# Botao inserir Categoria
+ImgAddCategoria = Image.open('add.png')
+ImgAddCategoria = ImgAddCategoria.resize((17,17))
+ImgAddCategoria = ImageTk.PhotoImage(ImgAddCategoria)
+botaoAddCategoria = Button(frameConfiguracao, image=ImgAddCategoria, text=" Adicionar".upper(), width=80, compound=LEFT, anchor=NW, font=('Ivy 7 bold'), bg=co1, fg=co0, overrelief=RIDGE)
+botaoAddCategoria.place(x=110, y=181)
+
+
+
 
 janela.mainloop()
