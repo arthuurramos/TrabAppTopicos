@@ -21,7 +21,7 @@ from tkcalendar import Calendar, DateEntry
 from datetime import date
 
 #importando funções view
-from view import valoresBarra, tabela, deletarReceitas, deletarGastos, inserirCategoria, verCategorias, inserirGastos, inserirReceita
+from view import porcentagemValor, valoresBarra, pizzaValores, tabela, deletarReceitas, deletarGastos, inserirCategoria, verCategorias, inserirGastos, inserirReceita
 
 
 # cores 
@@ -196,12 +196,12 @@ def porcentagem():
     style.theme_use('default')
     style.configure("black.Horizontal.TProgressbar", background='#daed6b')
     style.configure("TProgressbar", thickness=25)
-    bar = Progressbar(frameMeio, length=180, style='black.Horizontal.TProgressbar')
     
+    bar = Progressbar(frameMeio, length=180, style='black.Horizontal.TProgressbar')
     bar.place(x=10, y=35)
-    bar['value'] = 50
+    bar['value'] = porcentagemValor()
 
-    valor = 50
+    valor = porcentagemValor()
 
     labelPorcentagem = Label(frameMeio, text="{:,.2f}%".format(valor), anchor=NW, font=('Verdana 12'), bg=co1, fg=co4)
     labelPorcentagem.place(x=200,y=35)
@@ -209,7 +209,7 @@ def porcentagem():
 # Função gráfico barras
 def graficoBarras():
     listaCategorias = ['Renda', 'Despesas', 'Saldo']
-    listaValores = [3000, 2000, 1000]
+    listaValores = valoresBarra()
 
     # faça figura e atribua objetos de eixo
     figura = plt.Figure(figsize=(4, 3.45), dpi=60)
@@ -254,7 +254,7 @@ def graficoBarras():
 
 # Função resumo total
 def resumo():
-    valor = [3000, 2000, 1000]
+    valor = valoresBarra()
     l_linha = Label(frameMeio, text="", width=215, height=1, anchor=NW, font=('Arial 1'), bg='#545454')
     l_linha.place(x=309, y=52)
     l_sumario = Label(frameMeio, text="Total de renda mensal      ".upper(), anchor=NW, font=('Verdana 12'), bg=co1, fg='#83a9e6')
@@ -288,8 +288,8 @@ def graficoPizza():
     figura = plt.Figure(figsize=(5, 3), dpi=90)
     ax = figura.add_subplot(111)
 
-    lista_valores = [345,225,534]
-    lista_categorias = ['Renda', 'Despesa', 'Saldo']
+    lista_valores = pizzaValores()[1]
+    lista_categorias = pizzaValores()[0]
 
     # only "explode" the 2nd slice (i.e. 'Hogs')
 

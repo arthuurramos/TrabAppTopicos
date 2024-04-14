@@ -1,4 +1,5 @@
 import sqlite3 as lite
+import pandas as pd
 
 # conexão com bd
 con = lite.connect('dados.db')
@@ -99,10 +100,73 @@ def tabela():
     
     return tabelaLista
 
-# função dados do grafico barras
+# função valores do grafico barras
 def valoresBarra():
+    # RECEITA total
     receitas = verReceitas()
-    receitasLista =[]
+    receitasLista = []
 
     for i in receitas:
         receitasLista.append(i[3])
+    
+    receitaTotal = sum(receitasLista)
+
+    # DESPESA total
+    despesas = verGastos()
+    despesasLista = []
+
+    for i in despesas:
+        despesasLista.append(i[3])
+
+    despesaTotal = sum(despesasLista)
+
+    # SALDO total
+    saldoTotal = receitaTotal - despesaTotal
+
+    return [receitaTotal, despesaTotal, saldoTotal]
+
+
+# função valores grafico pizza
+def pizzaValores():
+    gastos = verGastos()
+    
+    tabelaLista = []
+
+    for i in gastos:
+        tabelaLista.append(i)
+
+    dataframe = pd.DataFrame(tabelaLista, columns=['id', 'Categoria', 'Data', 'valor'])
+    dataframe = dataframe.groupby('Categoria')['valor'].sum()
+
+    listaQuantias = dataframe.values.tolist()
+    listaCategorias = []
+
+    for i in dataframe.index:
+        listaCategorias.append(i)
+
+    return ([listaCategorias, listaQuantias])
+
+# função grafico porcentagem
+def porcentagemValor():
+    # RECEITA total
+    receitas = verReceitas()
+    receitasLista = []
+
+    for i in receitas:
+        receitasLista.append(i[3])
+    
+    receitaTotal = sum(receitasLista)
+
+    # DESPESA total
+    despesas = verGastos()
+    despesasLista = []
+
+    for i in despesas:
+        despesasLista.append(i[3])
+
+    despesaTotal = sum(despesasLista)
+
+    # SALDO total
+    total = ((receitaTotal - despesaTotal) / receitaTotal) * 100  
+    totalCerto = 100 - total
+    return (totalCerto)
