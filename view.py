@@ -167,6 +167,9 @@ def porcentagemValor():
     despesaTotal = sum(despesasLista)
 
     # SALDO total
-    total = ((receitaTotal - despesaTotal) / receitaTotal) * 100  
-    totalCerto = 100 - total
+    if receitaTotal != 0:
+        total = ((receitaTotal - despesaTotal) / receitaTotal) * 100
+        totalCerto = 100 - total
+    else:
+        totalCerto = 0  # Ou qualquer outro valor padrão que faça sentido para o seu aplicativo
     return (totalCerto)
