@@ -64,10 +64,10 @@ frameBaixo.grid(row=2, column=0, pady=0, padx=10, sticky=NSEW)
 # FRAME CIMA
 # acessando a imagem
 appImg = Image.open('log.png')
-appImg = appImg.resize((45,45))
+appImg = appImg.resize((200,45))
 appImg = ImageTk.PhotoImage(appImg)
 
-appLogo = Label(frameCima, image=appImg, text="                        Controle de Finanças", width=900, compound=LEFT, padx=5, relief=RAISED, anchor=NW, font=('Verdana 20 bold'), bg=co1, fg=co4)
+appLogo = Label(frameCima, image=appImg, text="          Controle de Finanças", width=900, compound=LEFT, padx=5, relief=RAISED, anchor=NW, font=('Verdana 20 bold'), bg=co1, fg=co4)
 appLogo.place(x=0, y=0)
 
 # definindo tree = global
